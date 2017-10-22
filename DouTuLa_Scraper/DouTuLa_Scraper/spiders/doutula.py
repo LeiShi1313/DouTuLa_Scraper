@@ -63,11 +63,13 @@ class DoutulaSpider(scrapy.Spider):
         item = GifItem()
         soup = bs(response.body, 'html.parser')
 
+        item['_id'] = response.url.split('/')[-1]
         item['title'] = soup.find('h1').text
         item['url'] = response.url
         item['tags'] = []
         for a in soup.find('div', class_='pic-tips').find_all('a'):
             item['tags'].append(a.text)
+        item['file_urls'] = [soup.find('div', class_='swiper-wrapper').find('img')['src']]
 
         yield item
 
