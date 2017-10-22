@@ -22,12 +22,12 @@ NEWSPIDER_MODULE = 'DouTuLa_Scraper.spiders'
 ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 10
 
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 1
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
@@ -65,7 +65,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-        'scrapy.pipelines.images.ImagesPipeline': 1,
+        'scrapy.pipelines.files.FilesPipeline': 1,
         'DouTuLa_Scraper.pipelines.DoutulaScraperPipeline': 300
 }
 
@@ -90,8 +90,10 @@ ITEM_PIPELINES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-IMAGES_STORE = '/home/pi/xiaomi/gifs'
+FILES_STORE = '/home/pi/xiaomi/gifs'
 MONGO_URI = '127.0.0.1'
 MONGO_PORT = 27017
 MONGO_DB = 'DouTuLa'
-MONGO_COLLECTION = 'gifs'
+TAGS_COLLECTION = 'tags'
+IMAGES_COLLECTION = 'gifs'
+RELATION_COLLECTION = 'img_to_tag'

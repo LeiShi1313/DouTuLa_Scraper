@@ -7,10 +7,11 @@ from DouTuLa_Scraper.items import GifItem
 
 class DoutulaSpider(scrapy.Spider):
     name = "doutula"
-    allowed_domains = ["www.doutula.com"]
+    allowed_domains = ["doutula.com"]
     list_url = "https://www.doutula.com/photo/list";
     page_url = "https://www.doutula.com/photo/list/?page="
     last_page = 1
+    cur_page = 1
     headers = {
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
         "Accept-Language": "zh-CN,zh;q=0.8",
@@ -40,12 +41,11 @@ class DoutulaSpider(scrapy.Spider):
         logging.info("Last page found: {}".format(self.last_page))
         logging.info("************************************************")
 
-        for page in range(1, self.last_page+1):
-            yield scrapy.Request(
-                    url = self.page_url + str(page),
-                    headers = self.headers,
-                    callback = self.parse_one_page
-                    )
+        yield scrapy.Request(
+               url = self.page_url + str(self.cur_page),
+               headers = self.headers,
+               callback = self.parse_one_page
+               )
 
     def parse_one_page(self, response):
         soup = bs(response.body, 'html.parser')
@@ -58,6 +58,13 @@ class DoutulaSpider(scrapy.Spider):
                     headers = self.headers,
                     callback = self.parse_gif_page
                     )
+        if self.cur_page+1 <= self.last_page:
+            self.cur_page += 1
+            yield scrapy.Request(
+               url = self.page_url + str(self.cur_page),
+               headers = self.headers,
+               callback = self.parse_one_page
+               )
 
     def parse_gif_page(self, response):
         item = GifItem()
@@ -71,5 +78,4 @@ class DoutulaSpider(scrapy.Spider):
             item['tags'].append(a.text)
         item['file_urls'] = [soup.find('div', class_='swiper-wrapper').find('img')['src']]
 
-        yield item
-
+        yield item 
